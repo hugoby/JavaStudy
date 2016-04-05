@@ -1,4 +1,5 @@
 import org.bouncycastle.util.encoders.Base64;
+import sun.misc.BASE64Decoder;
 
 import javax.crypto.*;
 import javax.crypto.spec.DESKeySpec;
@@ -18,22 +19,24 @@ public class DES_En_decryption {
 
     public static void main(String[]args) throws NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, InvalidKeySpecException, InvalidKeyException, IOException {
         byte[]key=initSecretKey();
-        final String key2=Base64.toBase64String(key);
+        final String key_send=Base64.toBase64String(key);
 
-        final String text="Hugo";
+        final String text="Hugo_@#$%_123 456 789";
         final byte[] text_temp=text.getBytes();
 
         String encryptString= Base64.toBase64String(DES_encrypt(text_temp,key));
 
 
-        String decryptString=DES_decrypt(DES_encrypt(text_temp,key),key);
+
+        BASE64Decoder decoder = new BASE64Decoder();
+        byte[] encryptString_temp = decoder.decodeBuffer(encryptString);
+        byte[] key_temp=decoder.decodeBuffer(key_send);
+        String decryptString=DES_decrypt(encryptString_temp,key_temp);
 
 
         System.out.println("Before encryption:  "+text);
-        System.out.println("Length_text:  " + text.length()+' '+text_temp.length);
-        System.out.println("Length_string:  "+encryptString.length());
         System.out.println("After encryption:   "+encryptString);
-        System.out.println("After decryption:  "+decryptString);
+        System.out.println("After decryption:   "+decryptString);
     }
 
     private static byte[] initSecretKey() throws NoSuchAlgorithmException {
